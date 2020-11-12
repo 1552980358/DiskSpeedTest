@@ -2,8 +2,8 @@
 // Created by huli on 2020/11/10.
 //
 
-#ifndef DISKSPEEDTEST_SEQUENCE_WRITE_H
-#define DISKSPEEDTEST_SEQUENCE_WRITE_H
+#ifndef DISKSPEEDTEST_SEQUENCE_WRITE_RANDOM_SET_RANDOM_WRITE_H
+#define DISKSPEEDTEST_SEQUENCE_WRITE_RANDOM_SET_RANDOM_WRITE_H
 
 #include <string>
 using std::string;
@@ -24,6 +24,6 @@ void sleep_in_millisecond(long);
 
 void *sub_thread(void *);
 
-void sequence_write(string *, int *, int *);
+void sequence_write_random_set_random_write(string *, int *, int *);
 
-#endif //DISKSPEEDTEST_SEQUENCE_WRITE_H
+#endif //DISKSPEEDTEST_SEQUENCE_WRITE_RANDOM_SET_RANDOM_WRITE_H

@@ -2,7 +2,7 @@
 // Created by huli on 2020/11/10.
 //
 
-#include "sequence_write.h"
+#include "sequence_write_random_set_random_write.h"
 #include "InformationListener.h"
 #include <iostream>
 #include <string>
@@ -96,7 +96,7 @@ void *sub_thread(void *listener) {
     return nullptr;
 }
 
-void sequence_write(string *target_path, int *no_of_set, int *no_of_gb) {
+void sequence_write_random_set_random_write(string *target_path, int *no_of_set, int *no_of_gb) {
 
     cout << "Generate random data..........";
     default_random_engine defaultRandomEngine;
