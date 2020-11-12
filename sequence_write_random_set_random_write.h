@@ -6,6 +6,12 @@
 #define DISKSPEEDTEST_SEQUENCE_WRITE_RANDOM_SET_RANDOM_WRITE_H
 
 #include <string>
+#include "InformationListener.h"
+#include <iostream>
+#include <pthread.h>
+#include <random>
+#include <ctime>
+using namespace std;
 using std::string;
 #ifdef WIN32
 #include <windows.h>
@@ -14,11 +20,8 @@ using std::string;
 #else
 #include <unistd.h>
 #endif
-
-#define KB 1024
-#define MB 1048576
-#define GB 1073741824
-#define TB 1099511627776
+#include "byte_size.h"
+#include "cal_size.h"
 
 void sleep_in_millisecond(long);
 
