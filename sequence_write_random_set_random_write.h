@@ -22,10 +22,8 @@ using std::string;
 #endif
 #include "byte_size.h"
 #include "cal_size.h"
-
-void sleep_in_millisecond(long);
-
-void *sub_thread(void *);
+#include "sub_thread.h"
+#include "sleep_in_millisecond.h"
 
 void sequence_write_random_set_random_write(string *, int *, int *);
 

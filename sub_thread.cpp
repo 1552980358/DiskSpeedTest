@@ -4,29 +4,6 @@
 
 #include "sub_thread.h"
 
-#ifdef WIN32
-#include <windows.h>
-#elif _POSIX_C_SOURCE >= 199309L
-#include <time.h>
-#else
-#include <unistd.h>
-#endif
-
-void sleep_in_millisecond(long millisecond) {
-#ifdef WIN32
-    Sleep(millisecond);
-#elif _POSIX_C_SOURCE >= 199309L
-    timespec ts;
-    ts.tv_sec = millisecond / 1000;
-    ts.tv_nsec = (millisecond % 1000) * 1000000;
-    nanosleep(&ts, nullptr);
-#else
-    if (millisecond >= 1000)
-      sleep(millisecond / 1000);
-    usleep((millisecond % 1000) * 1000);
-#endif
-}
-
 void *sub_thread(void *listener) {
 
     auto *informationListener = (InformationListener *) listener;
