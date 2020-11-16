@@ -8,7 +8,7 @@ void sequence_write_fix_set_fix_write(const int type, string *target_path, int *
 
     cout << "Generate data..........";
 
-    byte data[*no_of_set];
+    kByte_t data;
     switch (type) {
         case 0:
             for (auto &i: data) {
