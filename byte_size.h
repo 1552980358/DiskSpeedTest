@@ -10,4 +10,7 @@
 #define GB 1073741824
 #define TB 1099511627776
 
+typedef unsigned char byte;
+typedef byte kByte_t[KB];
+
 #endif //DISKSPEEDTEST_BYTE_SIZE_H
