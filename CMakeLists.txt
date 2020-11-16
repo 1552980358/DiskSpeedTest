@@ -12,6 +12,16 @@ set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 #link_libraries(WriteLibrary)
 
-add_executable(DiskSpeedTest main.cpp sequence_write_random_set_random_write.cpp sequence_write_random_set_random_write.h InformationListener.h sequence_write_fix_set_fix_write.cpp sequence_write_fix_set_fix_write.h byte_size.h sub_thread.cpp sub_thread.h cal_size.cpp cal_size.h sleep_in_millisecond.cpp sleep_in_millisecond.h)
+add_executable(
+        DiskSpeedTest
+        main.cpp
+        sequence_write_random_set_random_write.cpp sequence_write_random_set_random_write.h
+        InformationListener.h sequence_write_fix_set_fix_write.cpp
+        sequence_write_fix_set_fix_write.h byte_size.h
+        sub_thread.cpp sub_thread.h
+        cal_size.cpp cal_size.h
+        sleep_in_millisecond.cpp sleep_in_millisecond.h
+        sequence_write_fix_set_fix_write.cpp sequence_write_fix_set_fix_write.h
+)
 
 #target_link_libraries(DiskSpeedTest WriteLibrary)
