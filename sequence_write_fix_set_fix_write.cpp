@@ -4,7 +4,7 @@
 
 #include "sequence_write_fix_set_fix_write.h"
 
-void sequence_write_fix_set_fix_write(const int type, string *target_path, int *no_of_set, int *no_of_gb) {
+void sequence_write_fix_set_fix_write(const int type, string *target_path, int *no_of_gb) {
 
     cout << "Generate data..........";
 
