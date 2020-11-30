@@ -4,12 +4,12 @@
 
 #include "sequence_write_random_set_random_write.h"
 
-void sequence_write_random_set_random_write(string *target_path, int *no_of_set, int *no_of_gb) {
+void sequence_write_random_set_random_write(const string &target_path, const int &no_of_set, const int &no_of_gb) {
 
     cout << "Generate random data..........";
     default_random_engine defaultRandomEngine;
     uniform_int_distribution uniformIntDistribution(0, 128);
-    unsigned char random_data[*no_of_set][KB];
+    unsigned char random_data[no_of_set][KB];
     for (auto &i: random_data) {
         for (unsigned char &j: i) {
             j = uniformIntDistribution(defaultRandomEngine);
@@ -49,7 +49,7 @@ void sequence_write_random_set_random_write(string *target_path, int *no_of_set,
         << "Test launch:" << endl;
 
     defaultRandomEngine = default_random_engine();
-    uniformIntDistribution = uniform_int_distribution(0, *no_of_set);
+    uniformIntDistribution = uniform_int_distribution(0, no_of_set);
     listener.thread_state = 1;
     for (i = 0; i < *no_of_gb * MB; ++i) {
         fwrite(random_data[uniformIntDistribution(defaultRandomEngine)], KB, 1, file);

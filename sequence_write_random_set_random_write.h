@@ -25,6 +25,6 @@ using std::string;
 #include "sub_thread.h"
 #include "sleep_in_millisecond.h"
 
-void sequence_write_random_set_random_write(string *, int *, int *);
+void sequence_write_random_set_random_write(const string &, const int &, const int &);
 
 #endif //DISKSPEEDTEST_SEQUENCE_WRITE_RANDOM_SET_RANDOM_WRITE_H
