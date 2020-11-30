@@ -30,7 +30,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     pthread_t pthread;
     pthread_create(&pthread, nullptr, sub_thread, (void *) &listener);
     int i;
-    for (i = 1; i <= 10 && !listener.thread_signal; ++i) {
+    for (i = 1; i <= 10 && !listener.is_thread_ready(); ++i) {
         for (int j = 0; j < 2; ++j) {
             cout << '\b';
         }
@@ -41,7 +41,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     for (int j = 0; j < (i >= 10 ? 3 : 2); ++j) {
         cout << '\b';
     }
-    if (!listener.thread_signal) {
+    if (!listener.is_thread_ready()) {
         cout << "Failed" << endl;
         return;
     }
@@ -50,14 +50,14 @@ void sequence_write_random_set_random_write(const string &target_path, const int
 
     defaultRandomEngine = default_random_engine();
     uniformIntDistribution = uniform_int_distribution(0, no_of_set);
-    listener.thread_state = 1;
+    listener.start_writing();
     for (i = 0; i < no_of_gb * MB; ++i) {
         fwrite(random_data[uniformIntDistribution(defaultRandomEngine)], KB, 1, file);
         listener.add_wrote_size(KB);
     }
 
     fclose(file);
-    listener.thread_state = 0;
+    listener.complete_writing();
     cout << "..........Completed" << endl
         << "Remove temporary file.........." << (!remove(target_path.c_str()) ? "Succeed" : "Failed") << endl
         << endl

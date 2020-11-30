@@ -12,11 +12,11 @@ void *sub_thread(void *listener) {
     double different_in_size;
     long time_record;
 
-    informationListener->thread_signal = 1;
-    for (;!informationListener->thread_state;) {
+    informationListener->thread_ready();
+    for (;!informationListener->is_started_writing();) {
         sleep_in_millisecond(1);
     }
-    for (;informationListener->thread_state;) {
+    for (;informationListener->is_started_writing();) {
         current_size = informationListener->get_wrote_size();
         time_record = time_t(0);
         different_in_size = current_size - last_size;

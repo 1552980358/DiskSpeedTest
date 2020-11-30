@@ -4,6 +4,7 @@
 
 #ifndef DISKSPEEDTEST_INFORMATIONLISTENER_H
 #define DISKSPEEDTEST_INFORMATIONLISTENER_H
+#include "byte_size.h"
 
 struct InformationListener {
 
@@ -15,15 +16,25 @@ private:
 
     int _sample_count = 0;
 
+    int thread_state = 0;
+
+    int thread_signal = 0;
+
 public:
 
     void add_sample_value(const double &);
 
     double get_sample_average() const;
 
-    int thread_state = 0;
+    virtual int is_thread_ready();
 
-    int thread_signal = 0;
+    virtual void thread_ready();
+
+    virtual void start_writing();
+
+    virtual int is_started_writing();
+
+    virtual void complete_writing();
 
     virtual void add_wrote_size(const int &);
 
