@@ -6,10 +6,11 @@
 #define DISKSPEEDTEST_SUB_THREAD_H
 
 #include <iostream>
-using namespace std;
+#include <pthread.h>
 #include "InformationListener.h"
 #include "cal_size.h"
 #include "sleep_in_millisecond.h"
+using namespace std;
 
 void *sub_thread(void *);
 
