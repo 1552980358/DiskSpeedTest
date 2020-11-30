@@ -18,7 +18,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     cout << "Succeed" << endl
         << "Opening temporary test file..........";
 
-    FILE *file = fopen(target_path->c_str(), "wb+");
+    FILE *file = fopen(target_path.c_str(), "wb+");
     if (file == nullptr) {
         cout << "Failed" << endl;
         return;
@@ -51,7 +51,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     defaultRandomEngine = default_random_engine();
     uniformIntDistribution = uniform_int_distribution(0, no_of_set);
     listener.thread_state = 1;
-    for (i = 0; i < *no_of_gb * MB; ++i) {
+    for (i = 0; i < no_of_gb * MB; ++i) {
         fwrite(random_data[uniformIntDistribution(defaultRandomEngine)], KB, 1, file);
         listener.wrote_size += KB;
     }
@@ -59,10 +59,10 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     fclose(file);
     listener.thread_state = 0;
     cout << "..........Completed" << endl
-        << "Remove temporary file.........." << (!remove(target_path->c_str()) ? "Succeed" : "Failed") << endl
+        << "Remove temporary file.........." << (!remove(target_path.c_str()) ? "Succeed" : "Failed") << endl
         << endl
         << "========================================" << endl
-        << "Write Size: " << *no_of_gb << " GB" << endl
+        << "Write Size: " << no_of_gb << " GB" << endl
         << "Average: " << cal_size(listener.sample_sum / listener.sample_count) << "/s" << endl
         << "========================================" << endl
         << endl

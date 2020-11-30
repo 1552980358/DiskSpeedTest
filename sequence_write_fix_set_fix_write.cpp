@@ -31,7 +31,7 @@ void sequence_write_fix_set_fix_write(const int &type, const string &target_path
 
     cout << "Succeed" << endl
          << "Opening temporary test file..........";
-    FILE *file = fopen(target_path->c_str(), "wb+");
+    FILE *file = fopen(target_path.c_str(), "wb+");
     if (file == nullptr) {
         cout << "Failed" << endl;
         return;
@@ -62,17 +62,17 @@ void sequence_write_fix_set_fix_write(const int &type, const string &target_path
          << "Test launch:" << endl;
 
     listener.thread_state = 1;
-    for (i = 0; i < *no_of_gb * MB; ++i) {
+    for (i = 0; i < no_of_gb * MB; ++i) {
         fwrite(data, KB, 1, file);
         listener.wrote_size += KB;
     }
     fclose(file);
 
     cout << "..........Completed" << endl
-         << "Remove temporary file.........." << (!remove(target_path->c_str()) ? "Succeed" : "Failed") << endl
+         << "Remove temporary file.........." << (!remove(target_path.c_str()) ? "Succeed" : "Failed") << endl
          << endl
          << "========================================" << endl
-         << "Write Size: " << *no_of_gb << " GB" << endl
+         << "Write Size: " << no_of_gb << " GB" << endl
          << "Average: " << cal_size(listener.sample_sum / listener.sample_count) << "/s" << endl
          << "========================================" << endl
          << endl
