@@ -17,12 +17,11 @@ void *sub_thread(void *listener) {
         sleep_in_millisecond(1);
     }
     for (;informationListener->thread_state;) {
-        current_size = informationListener->wrote_size;
+        current_size = informationListener->get_wrote_size();
         time_record = time_t(0);
         different_in_size = current_size - last_size;
         last_size = current_size;
-        informationListener->sample_sum += different_in_size;
-        informationListener->sample_count++;
+        informationListener->add_sample_value(different_in_size);
         for (int i = 0; i < 15; ++i) {
             cout << "\b";
         }

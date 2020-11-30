@@ -53,7 +53,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
     listener.thread_state = 1;
     for (i = 0; i < no_of_gb * MB; ++i) {
         fwrite(random_data[uniformIntDistribution(defaultRandomEngine)], KB, 1, file);
-        listener.wrote_size += KB;
+        listener.add_wrote_size(KB);
     }
 
     fclose(file);
@@ -63,7 +63,7 @@ void sequence_write_random_set_random_write(const string &target_path, const int
         << endl
         << "========================================" << endl
         << "Write Size: " << no_of_gb << " GB" << endl
-        << "Average: " << cal_size(listener.sample_sum / listener.sample_count) << "/s" << endl
+        << "Average: " << cal_size(listener.get_sample_average()) << "/s" << endl
         << "========================================" << endl
         << endl
         << endl;

@@ -64,7 +64,7 @@ void sequence_write_fix_set_fix_write(const int &type, const string &target_path
     listener.thread_state = 1;
     for (i = 0; i < no_of_gb * MB; ++i) {
         fwrite(data, KB, 1, file);
-        listener.wrote_size += KB;
+        listener.add_wrote_size(KB);
     }
     fclose(file);
 
@@ -73,7 +73,7 @@ void sequence_write_fix_set_fix_write(const int &type, const string &target_path
          << endl
          << "========================================" << endl
          << "Write Size: " << no_of_gb << " GB" << endl
-         << "Average: " << cal_size(listener.sample_sum / listener.sample_count) << "/s" << endl
+         << "Average: " << cal_size(listener.get_sample_average()) << "/s" << endl
          << "========================================" << endl
          << endl
          << endl;
