@@ -5,10 +5,13 @@
 #ifndef DISKSPEEDTEST_CAL_SIZE_H
 #define DISKSPEEDTEST_CAL_SIZE_H
 
-#include <iostream>
+
 #include "byte_size.h"
-using namespace std;
+#include <string>
+using std::string;
 
 string cal_size(double);
+
+string cal_size_miB(double);
 
 #endif //DISKSPEEDTEST_CAL_SIZE_H
