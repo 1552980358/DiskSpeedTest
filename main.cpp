@@ -23,7 +23,7 @@ double get_sum(pthread_write_listener *);
 int main(int argc, char **argv) {
     string file;
     auto no_of_gb = 10 * MB;
-    auto no_of_thread = 1;
+    auto no_of_thread = 2;
 
     if (!get_config(argc, argv, file, no_of_gb, no_of_thread)) {
         return 1;
@@ -50,6 +50,8 @@ int main(int argc, char **argv) {
 }
 
 int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_thread) {
+    SYSTEM_INFO info;
+    GetSystemInfo(&info);
     auto i = 1;
     while (i < argc) {
         if (argv[i][0] == '-') {
@@ -66,7 +68,6 @@ int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_th
                     }
                     break;
                 }
-                case 'S':
                 case 's': {
                     i++;
                     if (!argv[i]) {
@@ -80,8 +81,122 @@ int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_th
                     i++;
                     if (!argv[i]) {
                         cout << "No of GB not specified." << endl << "Usage: -j <NUM_OF_THREAD>." << endl;
+                        return false;
                     }
                     no_of_thread = get_argv_int(argv, i);
+                    break;
+                }
+                case 'N': {
+                    i++;
+                    auto tmp = string(argv[i]);
+                    auto channel_speed = 250; // PCI-e Gen 1.0
+                    if (tmp.size() == 3) {
+                        if (tmp[1] != '.') {
+                            cout << "PCI-e version and num of channels not specified" << endl
+                                 << "Usage: -N <PCI-e_GENERATION>.<NUM_OF_CHANNELS>[.<MODE>]" << endl
+                                 << "Example: -N 3.4.N";
+                            return false;
+                        }
+
+                        switch (tmp[0]) {
+                            case '1':
+                                channel_speed *= 1;
+                                break;
+                            case '2':
+                                channel_speed *= 2;
+                                break;
+                            case '3':
+                                channel_speed *= 4;
+                                break;
+                            case '4':
+                                channel_speed *= 8;
+                                break;
+                            case '5':
+                                channel_speed *= 16;
+                                break;
+                            default:
+                                cout << "Unknown value: \'" << tmp[0] << "\'." << endl
+                                     << "PCI-e version and num of channels not specified" << endl
+                                     << "Usage: -N <PCI-e_GENERATION>.<NUM_OF_CHANNELS>[.<MODE>]" << endl
+                                     << "Example: -N 3.4.N";
+                                return false;
+                        }
+
+                        if (tmp[2] < '0' || tmp[2] > '9') {
+                            return false;
+                        }
+
+                        // Get the max speed
+                        channel_speed *= (tmp[2] - 48);
+
+                        // Configure according to channel speed
+                        no_of_thread = channel_speed / 1024;
+                        if (no_of_thread > info.dwNumberOfProcessors - 1) {
+                            no_of_thread = (long) info.dwNumberOfProcessors - 1;
+                        }
+
+                        no_of_gb = channel_speed * 10;
+                        break;
+                    }
+
+                    if (tmp.size() == 5) {
+                        if (tmp[1] != '.' || tmp[3] != '.' || (tmp[4] != 'N' && tmp[4] != 'E')) {
+                            cout << "PCI-e version and num of channels not specified" << endl
+                                 << "Usage: -N <PCI-e_GENERATION>.<NUM_OF_CHANNELS>[.<MODE>]" << endl
+                                 << "Example: -N 3.4.N" << endl;
+                            return false;
+                        }
+
+                        switch (tmp[0]) {
+                            case '1':
+                                channel_speed *= 1;
+                                break;
+                            case '2':
+                                channel_speed *= 2;
+                                break;
+                            case '3':
+                                channel_speed *= 4;
+                                break;
+                            case '4':
+                                channel_speed *= 8;
+                                break;
+                            case '5':
+                                channel_speed *= 16;
+                                break;
+                            default:
+                                cout << "Unknown value: \'" << tmp[0] << "\'." << endl
+                                     << "PCI-e version and num of channels not specified" << endl
+                                     << "Usage: -N <PCI-e_GENERATION>.<NUM_OF_CHANNELS>[.<MODE>]" << endl
+                                     << "Example: -N 3.4.N" << endl;
+                                return false;
+                        }
+
+                        if (tmp[4] == 'N') {
+                            if (tmp[2] < '0' || tmp[2] > '9') {
+                                return false;
+                            }
+
+                            // Get the max speed
+                            channel_speed *= (tmp[2] - 48);
+
+                            // Configure according to channel speed
+                            no_of_thread = channel_speed / 1024;
+                            if (no_of_thread > info.dwNumberOfProcessors - 1) {
+                                no_of_thread = (long) info.dwNumberOfProcessors - 1;
+                            }
+                        } else {
+                            no_of_thread = (long) info.dwNumberOfProcessors - 1;
+                        }
+
+                        no_of_gb = channel_speed * 10;
+                        break;
+                    }
+
+                    cout << "PCI-e version and num of channels not specified" << endl
+                         << "Usage: -N <PCI-e_GENERATION>.<NUM_OF_CHANNELS>[.<MODE>]" << endl
+                         << "Example: -N 3.4.N";
+
+                    break;
                 }
             }
         } else {
