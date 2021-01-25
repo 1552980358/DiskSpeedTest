@@ -8,17 +8,15 @@ using std::string;
 #include "cal_size.h"
 #include "pthread_write_listener.h"
 #include "writing.h"
+#include "check_state.h"
 
 int get_config(int, char **, string &, int &, int &);
 int get_argv_int(char **, int);
 pthread_write_listener *create_threads(int);
 
 void wait_for_thread_launched(pthread_write_listener *);
-int check_is_launched(pthread_write_listener *);
 
 void show_speed(pthread_write_listener *);
-int are_all_completed(pthread_write_listener *);
-double get_sum(pthread_write_listener *);
 
 int main(int argc, char **argv) {
     string file;
@@ -246,17 +244,6 @@ void wait_for_thread_launched(pthread_write_listener *head) {
     while (!check_is_launched(head)) {}
 }
 
-int check_is_launched(pthread_write_listener *head) {
-    pthread_write_listener *listener = head;
-    while (listener) {
-        if (!listener->is_launched()) {
-            return false;
-        }
-        listener = listener->get_next();
-    }
-    return true;
-}
-
 void show_speed(pthread_write_listener *head) {
     double last_sum = 0;
     double current_sum;
@@ -276,25 +263,4 @@ void show_speed(pthread_write_listener *head) {
         last_sum = current_sum;
         Sleep(1000);
     }
-}
-
-int are_all_completed(pthread_write_listener *head) {
-    pthread_write_listener *listener = head;
-    while (listener) {
-        if (!listener->is_completed()) {
-            return false;
-        }
-        listener = listener->get_next();
-    }
-    return true;
-}
-
-double get_sum(pthread_write_listener *head) {
-    pthread_write_listener *listener = head;
-    double sum = 0;
-    while (listener) {
-        sum += listener->wrote_size();
-        listener = listener->get_next();
-    }
-    return sum;
 }
