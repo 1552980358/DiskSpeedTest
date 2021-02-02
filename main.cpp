@@ -11,6 +11,7 @@ using std::string;
 #include "writing.h"
 #include "check_state.h"
 #include "speed_sample.h"
+#include "sample_analysis.h"
 
 int get_config(int, char **, string &, int &, int &);
 int get_argv_int(char **, int);
@@ -49,6 +50,12 @@ int main(int argc, char **argv) {
     time(start_time);
 
     speed_sample_head = show_speed(pthread_listener_head);
+
+    int max = get_max_speed(speed_sample_head);
+    int min = get_min_speed(speed_sample_head);
+
+    cout << "Max speed: " << cal_size_miB(max) << endl
+         << "Min speed: " << cal_size_miB(min) << endl;
 
     return 0;
 }
