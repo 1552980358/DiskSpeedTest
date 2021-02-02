@@ -20,6 +20,8 @@ add_executable(
         byte_size.h
         cal_size.cpp cal_size.h
         pthread_write_listener.h pthread_write_listener.cpp
-        writing.h writing.cpp check_state.cpp check_state.h)
+        writing.h writing.cpp check_state.cpp check_state.h
+        speed_sample.cpp speed_sample.h
+)
 
 #target_link_libraries(DiskSpeedTest WriteLibrary)
