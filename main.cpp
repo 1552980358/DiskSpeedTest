@@ -5,10 +5,12 @@ using std::endl;
 using std::string;
 #include <pthread.h>
 #include <windows.h>
+#include <ctime>
 #include "cal_size.h"
 #include "pthread_write_listener.h"
 #include "writing.h"
 #include "check_state.h"
+#include "speed_sample.h"
 
 int get_config(int, char **, string &, int &, int &);
 int get_argv_int(char **, int);
@@ -16,12 +18,14 @@ pthread_write_listener *create_threads(int);
 
 void wait_for_thread_launched(pthread_write_listener *);
 
-void show_speed(pthread_write_listener *);
+speed_sample *show_speed(pthread_write_listener *);
 
 int main(int argc, char **argv) {
     string file;
     auto no_of_gb = 10 * MB;
     auto no_of_thread = 2;
+    time_t *start_time = nullptr;
+    speed_sample *speed_sample_head = nullptr;
 
     if (!get_config(argc, argv, file, no_of_gb, no_of_thread)) {
         return 1;
@@ -38,11 +42,13 @@ int main(int argc, char **argv) {
          << "Num of GB to write: " << no_of_gb << endl
          << "Num of threads: " << no_of_thread << endl;
 
-    pthread_write_listener *head = create_threads(no_of_thread);
-    wait_for_thread_launched(head);
-    pthread_write_listener::is_started = true;
+    pthread_write_listener *pthread_listener_head = create_threads(no_of_thread);
+    wait_for_thread_launched(pthread_listener_head);
 
-    show_speed(head);
+    pthread_write_listener::is_started = true;
+    time(start_time);
+
+    speed_sample_head = show_speed(pthread_listener_head);
 
     return 0;
 }
@@ -244,23 +250,24 @@ void wait_for_thread_launched(pthread_write_listener *head) {
     while (!check_is_launched(head)) {}
 }
 
-void show_speed(pthread_write_listener *head) {
+speed_sample *show_speed(pthread_write_listener *head) {
     double last_sum = 0;
     double current_sum;
-    string text;
+    int diff;
+    speed_sample *current_sample = nullptr;
+
     while (!are_all_completed(head)) {
         current_sum = get_sum(head);
-        for (int i = 0; i < text.size(); ++i) {
-            cout << '\b';
-        }
-        for (int i = 0; i < text.size(); ++i) {
-            cout << ' ';
-        }
-        for (int i = 0; i < text.size(); ++i) {
-            cout << '\b';
-        }
-        cout << (text = cal_size(current_sum) + " wrote, " + cal_size_miB(current_sum - last_sum) + "/s");
+
+        current_sample = new speed_sample(diff = (int) (current_sum - last_sum), current_sample);
+
+        cout << cal_size(current_sum) + " wrote, " + cal_size_miB(diff) + "/s" << endl;
         last_sum = current_sum;
         Sleep(1000);
     }
+
+    while (current_sample->get_last()) {
+        current_sample = current_sample->get_last();
+    }
+    return current_sample;
 }
