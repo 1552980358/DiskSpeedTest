@@ -57,6 +57,8 @@ int main(int argc, char **argv) {
     cout << "Max speed: " << cal_size_miB(max) << endl
          << "Min speed: " << cal_size_miB(min) << endl;
 
+    speed_sample_head = remove_samples(speed_sample_head);
+
     return 0;
 }
 

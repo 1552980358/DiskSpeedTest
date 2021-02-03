@@ -11,4 +11,6 @@ int get_max_speed(speed_sample *);
 
 int get_min_speed(speed_sample *);
 
+speed_sample *remove_samples(speed_sample *);
+
 #endif //DISKSPEEDTEST_SAMPLE_ANALYSIS_H
