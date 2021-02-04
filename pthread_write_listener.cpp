@@ -7,12 +7,12 @@ using std::string;
 #include <fstream>
 using std::fstream;
 using std::ios;
-#include "cal_size.h"
 
 int pthread_write_listener::is_started = false;
-kByte_t pthread_write_listener::data = "";
+byte_t *pthread_write_listener::data = nullptr;
 string pthread_write_listener::dir;
 int pthread_write_listener::size_write = 50 * MB;
+bool pthread_write_listener::is_cpp = false;
 
 pthread_write_listener::pthread_write_listener(pthread_write_listener *new_prev) { // NOLINT(cppcoreguidelines-pro-type-member-init)
     set_prev(new_prev);
@@ -47,7 +47,16 @@ int pthread_write_listener::is_launched() const {
     return status_launch;
 }
 
-void pthread_write_listener::write(FILE *file) {
+void pthread_write_listener::write(const char *path) {
+    pthread_write_listener::is_cpp ? write_c_pp(path) : write_c_standard(path);
+}
+
+void pthread_write_listener::write_c_pp(const char *path) {
+
+}
+
+void pthread_write_listener::write_c_standard(const char *path) {
+    FILE *file = fopen(path, "wb+");
     for (int i = 0; i < pthread_write_listener::size_write; i++) {
         try {
             fwrite(data, KB, 1, file);
@@ -57,6 +66,7 @@ void pthread_write_listener::write(FILE *file) {
         wrote += buffer;
     }
     fclose(file);
+    delete file;
     complete();
 }
 

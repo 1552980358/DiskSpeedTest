@@ -1,8 +1,11 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::ios;
+using std::ofstream;
 #include <string>
 using std::string;
+using std::to_string;
 #include <pthread.h>
 #include <windows.h>
 #include <ctime>
@@ -13,18 +16,23 @@ using std::string;
 #include "speed_sample.h"
 #include "sample_analysis.h"
 
+#include <malloc.h>
+
 int get_config(int, char **, string &, int &, int &);
 int get_argv_int(char **, int);
-pthread_write_listener *create_threads(int);
+
+pthread_write_listener *create_threads(const int &);
 
 void wait_for_thread_launched(pthread_write_listener *);
 
 speed_sample *show_speed(pthread_write_listener *);
 
 int main(int argc, char **argv) {
+
     string file;
     auto no_of_gb = 10 * MB;
     auto no_of_thread = 2;
+
     time_t *start_time = nullptr;
     speed_sample *speed_sample_head = nullptr;
 
@@ -33,15 +41,16 @@ int main(int argc, char **argv) {
     }
 
     pthread_write_listener::dir = file;
-    pthread_write_listener::size_write = no_of_gb;
+    pthread_write_listener::size_write = no_of_gb * MB;
 
-    for (auto &i : pthread_write_listener::data) {
-        i = 127;
+    pthread_write_listener::data = (byte_t *) malloc(KB);
+    for (int i = 0; i < KB; ++i) {
+        pthread_write_listener::data[i] = 255;
     }
 
-    cout << "Directory: " << file << endl
-         << "Num of GB to write: " << no_of_gb << endl
-         << "Num of threads: " << no_of_thread << endl;
+    cout << "Directory: " + file + '\n' +
+          "Num of GB to write_c_standard: " + to_string(no_of_gb) + '\n' +
+          "Num of threads: " + to_string(no_of_thread) + '\n';
 
     pthread_write_listener *pthread_listener_head = create_threads(no_of_thread);
     wait_for_thread_launched(pthread_listener_head);
@@ -58,6 +67,8 @@ int main(int argc, char **argv) {
          << "Min speed: " << cal_size_miB(min) << endl;
 
     speed_sample_head = remove_samples(speed_sample_head);
+
+    free(pthread_write_listener::data);
 
     return 0;
 }
@@ -211,6 +222,18 @@ int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_th
 
                     break;
                 }
+                case 'c': {
+                    auto str = string(argv[i]);
+                    if (str == "-cpp" || str == "-CPP") {
+                        pthread_write_listener::is_cpp = true;
+                        break;
+                    }
+                    if (str == "-CS" || str == "-cs") {
+                        pthread_write_listener::is_cpp = false;
+                        break;
+                    }
+                    break;
+                }
             }
         } else {
             cout << "Unknown argument '\'" << argv[i] << "\' ." << endl;
@@ -237,15 +260,15 @@ int get_argv_int(char **argv, int i) {
     return k;
 }
 
-pthread_write_listener *create_threads(int no_of_thread) {
+pthread_write_listener *create_threads(const int &no_of_thread) {
     pthread_write_listener *listener = nullptr;
     // Using concept of linked list
     for (auto i = 0; i < no_of_thread; ++i) {
         listener = new pthread_write_listener(listener);
         if (listener->get_prev()) {
-            listener->set_prev(listener);
+            listener->get_prev()->set_next(listener);
         }
-        pthread_create(listener->getPThreadID(), nullptr, fun_write, (void *) listener);
+        pthread_create(listener->getPThreadID(), nullptr, fun_write, listener);
     }
     while (listener->get_prev()) {
         listener = listener->get_prev();

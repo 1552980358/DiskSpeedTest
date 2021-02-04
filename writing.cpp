@@ -17,13 +17,14 @@ void wait_for_start() {
 void *fun_write(void *argv) {
     auto listener = (pthread_write_listener *) argv;
 
+    string path = pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID());
+
     cout << "Thread #" << listener->get_launched() << ": Launched!" << endl;
-    wait_for_start();
+    // wait_for_start();
 
     // fstream stream(pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID()), ios::out | ios::binary);
-    // listener->write(&stream);
-    FILE *file = fopen((pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID())).c_str(), "wb+");
-    listener->write(file);
+    // listener->write_c_standard(&stream);
+    listener->write(path.c_str());
 
     return nullptr;
 }

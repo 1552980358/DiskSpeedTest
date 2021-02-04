@@ -21,9 +21,10 @@ public:
     explicit pthread_write_listener(pthread_write_listener *);
 
     // 1KiB
-    static kByte_t data;
+    static byte_t *data;
     static int is_started;
     static string dir;
+    static bool is_cpp;
 
     const static int buffer = 1024;
     static int size_write;
@@ -39,7 +40,9 @@ public:
     pthread_t *get_launched();
     [[nodiscard]] int is_launched() const;
 
-    void write(FILE *);
+    void write(const char *);
+    void write_c_standard(const char *);
+    void write_c_pp(const char *);
 
     double wrote_size() const;
 
