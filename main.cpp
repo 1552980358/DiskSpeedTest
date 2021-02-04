@@ -238,15 +238,13 @@ int get_argv_int(char **argv, int i) {
 }
 
 pthread_write_listener *create_threads(int no_of_thread) {
-    pthread_write_listener *last = nullptr;
-    pthread_write_listener *listener;
+    pthread_write_listener *listener = nullptr;
     // Using concept of linked list
     for (auto i = 0; i < no_of_thread; ++i) {
-        listener = new pthread_write_listener(last);
-        if (last) {
-            last->set_next(listener);
+        listener = new pthread_write_listener(listener);
+        if (listener->get_prev()) {
+            listener->set_prev(listener);
         }
-        last = listener;
         pthread_create(listener->getPThreadID(), nullptr, fun_write, (void *) listener);
     }
     while (listener->get_prev()) {
