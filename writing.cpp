@@ -11,7 +11,7 @@ using std::ios;
 #include "pthread_write_listener.h"
 
 void wait_for_start() {
-    while (!pthread_write_listener::is_started) {}
+    while (!pthread_write_listener::is_started);
 }
 
 void *fun_write(void *argv) {

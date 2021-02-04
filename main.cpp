@@ -254,7 +254,7 @@ pthread_write_listener *create_threads(int no_of_thread) {
 }
 
 void wait_for_thread_launched(pthread_write_listener *head) {
-    while (!check_is_launched(head)) {}
+    while (!check_is_launched(head));
 }
 
 speed_sample *show_speed(pthread_write_listener *head) {
