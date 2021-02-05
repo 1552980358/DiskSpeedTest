@@ -15,7 +15,10 @@ int pthread_write_listener::size_write = 50 * MB;
 bool pthread_write_listener::is_cpp = false;
 
 pthread_write_listener::pthread_write_listener(pthread_write_listener *new_prev) { // NOLINT(cppcoreguidelines-pro-type-member-init)
-    set_prev(new_prev);
+    if (new_prev) {
+        set_prev(new_prev);
+        new_prev->set_next(this);
+    }
 }
 
 void pthread_write_listener::set_prev(pthread_write_listener *new_prev) {

@@ -265,9 +265,6 @@ pthread_write_listener *create_threads(const int &no_of_thread) {
     // Using concept of linked list
     for (auto i = 0; i < no_of_thread; ++i) {
         listener = new pthread_write_listener(listener);
-        if (listener->get_prev()) {
-            listener->get_prev()->set_next(listener);
-        }
         pthread_create(listener->getPThreadID(), nullptr, fun_write, listener);
     }
     while (listener->get_prev()) {
