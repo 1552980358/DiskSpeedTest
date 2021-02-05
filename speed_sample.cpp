@@ -4,9 +4,12 @@
 
 #include "speed_sample.h"
 
-speed_sample::speed_sample(int data, speed_sample *last) {
+speed_sample::speed_sample(double data, speed_sample *last) {
     _data = data;
-    _last = last;
+    if (last) {
+        _last = last;
+        last->set_next(this);
+    }
 }
 
 speed_sample *speed_sample::get_last() {
