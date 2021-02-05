@@ -40,7 +40,6 @@ public:
     pthread_t *get_launched();
     [[nodiscard]] int is_launched() const;
 
-    void write(const char *);
     void write_c_standard(const char *);
     void write_c_pp(const char *);
 

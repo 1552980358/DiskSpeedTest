@@ -47,10 +47,6 @@ int pthread_write_listener::is_launched() const {
     return status_launch;
 }
 
-void pthread_write_listener::write(const char *path) {
-    pthread_write_listener::is_cpp ? write_c_pp(path) : write_c_standard(path);
-}
-
 void pthread_write_listener::write_c_pp(const char *path) {
 
 }

@@ -5,13 +5,17 @@ using std::endl;
 #include <string>
 using std::string;
 using std::to_string;
-#include <fstream>
 using std::fstream;
 using std::ios;
 #include "pthread_write_listener.h"
 
 void wait_for_start() {
     while (!pthread_write_listener::is_started);
+}
+
+void write(pthread_write_listener *listener, const char *path, bool is_cpp) {
+    wait_for_start();
+    is_cpp ? listener->write_c_pp(path) : listener->write_c_standard(path);
 }
 
 void *fun_write(void *argv) {
@@ -24,7 +28,7 @@ void *fun_write(void *argv) {
 
     // fstream stream(pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID()), ios::out | ios::binary);
     // listener->write_c_standard(&stream);
-    listener->write(path.c_str());
+    write(listener, path.c_str(), pthread_write_listener::is_cpp);
 
     return nullptr;
 }
