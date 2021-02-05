@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     }
 
     pthread_write_listener::dir = file;
-    pthread_write_listener::size_write = no_of_gb * MB;
+    pthread_write_listener::size_write = (no_of_gb * MB) / no_of_thread;
 
     pthread_write_listener::data = (byte_t *) malloc(KB);
     for (int i = 0; i < KB; ++i) {
