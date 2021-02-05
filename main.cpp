@@ -224,11 +224,11 @@ int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_th
                 }
                 case 'c': {
                     auto str = string(argv[i]);
-                    if (str == "-cpp" || str == "-CPP") {
+                    if (str == "-cpp") {
                         pthread_write_listener::is_cpp = true;
                         break;
                     }
-                    if (str == "-CS" || str == "-cs") {
+                    if (str == "-c") {
                         pthread_write_listener::is_cpp = false;
                         break;
                     }
