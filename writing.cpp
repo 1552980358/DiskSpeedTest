@@ -23,7 +23,7 @@ void *fun_write(void *argv) {
 
     string path = pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID());
 
-    cout << "Thread #" << listener->get_launched() << ": Launched!" << endl;
+    cout << "Thread #" + to_string((int) *listener->get_launched()) + ": Launched!\n";
     // wait_for_start();
 
     // fstream stream(pthread_write_listener::dir + '/' + to_string(*listener->getPThreadID()), ios::out | ios::binary);
