@@ -19,7 +19,7 @@ int get_max_speed(speed_sample *head) {
 
 int get_min_speed(speed_sample *head) {
     speed_sample *current = head;
-    int min = 0;
+    int min = head->get_data();
     while (current) {
         if (current->get_data() < min) {
             min = current->get_data();
