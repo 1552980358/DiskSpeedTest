@@ -9,12 +9,12 @@
 struct speed_sample {
 
 private:
-    int _data;
+    double _data = 0;
     speed_sample *_last = nullptr;
     speed_sample *_next = nullptr;
 
 public:
-    speed_sample(int, speed_sample *);
+    speed_sample(double, speed_sample *);
 
     speed_sample *get_last();
 
