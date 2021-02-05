@@ -60,15 +60,18 @@ int main(int argc, char **argv) {
 
     speed_sample_head = show_speed(pthread_listener_head);
 
+    cout << endl << "====================" << endl;
+
     int max = get_max_speed(speed_sample_head);
     int min = get_min_speed(speed_sample_head);
 
-    cout << "Max speed: " << cal_size_miB(max) << endl
-         << "Min speed: " << cal_size_miB(min) << endl;
+     cout << "Max speed: " << cal_size_miB(max) << endl
+          << "Min speed: " << cal_size_miB(min) << endl;
 
     speed_sample_head = remove_samples(speed_sample_head);
-
     free(pthread_write_listener::data);
+
+    cout << "====================" << endl << endl;
 
     return 0;
 }
@@ -280,15 +283,16 @@ void wait_for_thread_launched(pthread_write_listener *head) {
 speed_sample *show_speed(pthread_write_listener *head) {
     double last_sum = 0;
     double current_sum;
-    int diff;
+    double diff;
     speed_sample *current_sample = nullptr;
 
+    cout << "====================" << endl;
     while (!are_all_completed(head)) {
         current_sum = get_sum(head);
 
-        current_sample = new speed_sample(diff = (int) (current_sum - last_sum), current_sample);
+        current_sample = new speed_sample(diff = current_sum - last_sum, current_sample);
 
-        cout << cal_size(current_sum) + " wrote, " + cal_size_miB(diff) + "/s" << endl;
+        cout << cal_size(current_sum) + " wrote, " + cal_size_miB(diff) + "/s\n";
         last_sum = current_sum;
         Sleep(1000);
     }
