@@ -5,7 +5,7 @@ using std::endl;
 #include <string>
 using std::string;
 #include <fstream>
-using std::fstream;
+using std::ofstream;
 using std::ios;
 
 int pthread_write_listener::is_started = false;
@@ -51,7 +51,14 @@ int pthread_write_listener::is_launched() const {
 }
 
 void pthread_write_listener::write_c_pp(const char *path) {
-
+    ofstream stream(path, ios::out | ios::binary);
+    for (int i = 0; i < pthread_write_listener::size_write; ++i) {
+        stream.write((char *)data, KB);
+        stream.flush();
+        wrote += buffer;
+    }
+    stream.close();
+    complete();
 }
 
 void pthread_write_listener::write_c_standard(const char *path) {
@@ -65,7 +72,6 @@ void pthread_write_listener::write_c_standard(const char *path) {
         wrote += buffer;
     }
     fclose(file);
-    delete file;
     complete();
 }
 
