@@ -43,9 +43,9 @@ public:
     void write_c_standard(const char *);
     void write_c_pp(const char *);
 
-    double wrote_size() const;
+    [[nodiscard]] double wrote_size() const;
 
-    int is_completed() const;
+    [[nodiscard]] int is_completed() const;
     void complete();
 
 };
