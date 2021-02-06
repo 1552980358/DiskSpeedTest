@@ -21,7 +21,7 @@ public:
     void set_next(speed_sample *);
     speed_sample *get_next();
 
-    int get_data() const;
+    [[nodiscard]] double get_data() const;
 
 };
 

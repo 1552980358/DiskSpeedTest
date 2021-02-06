@@ -24,6 +24,6 @@ speed_sample *speed_sample::get_next() {
     return _next;
 }
 
-int speed_sample::get_data() const {
+double speed_sample::get_data() const {
     return _data;
 }
