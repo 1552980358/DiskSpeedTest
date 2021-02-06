@@ -54,7 +54,7 @@ void pthread_write_listener::write_c_pp(const char *path) {
     ofstream stream(path, ios::out | ios::binary);
     for (int i = 0; i < pthread_write_listener::size_write; ++i) {
         stream.write((char *)data, KB);
-        stream.flush();
+        // stream.flush();
         wrote += buffer;
     }
     stream.close();
