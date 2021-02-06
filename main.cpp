@@ -286,6 +286,10 @@ speed_sample *show_speed(pthread_write_listener *head) {
     double diff;
     speed_sample *current_sample = nullptr;
 
+    // Wait for 1s before sampling data
+    // Prevent incorrect MIN speed
+    Sleep(1000);
+
     cout << "====================" << endl;
     while (!are_all_completed(head)) {
         current_sum = get_sum(head);
