@@ -10,73 +10,37 @@ using std::to_string;
 #include <windows.h>
 #include <ctime>
 #include "cal_size.h"
-#include "pthread_write_listener.h"
-#include "writing.h"
-#include "check_state.h"
 #include "speed_sample.h"
-#include "sample_analysis.h"
 
 #include <malloc.h>
 
-int get_config(int, char **, string &, int &, int &);
+int get_config(int, char **, string &, int &, int &, bool &);
 int get_argv_int(char **, int);
 
-pthread_write_listener *create_threads(const int &);
-
-void wait_for_thread_launched(pthread_write_listener *);
-
-speed_sample *show_speed(pthread_write_listener *);
+void sequence_write_1024();
 
 int main(int argc, char **argv) {
 
     string file;
     auto no_of_gb = 10 * MB;
     auto no_of_thread = 2;
+    bool is_cpp = true;
 
     time_t *start_time = nullptr;
     speed_sample *speed_sample_head = nullptr;
 
-    if (!get_config(argc, argv, file, no_of_gb, no_of_thread)) {
+    if (!get_config(argc, argv, file, no_of_gb, no_of_thread, is_cpp)) {
         return 1;
     }
 
-    pthread_write_listener::dir = file;
-    pthread_write_listener::size_write = (no_of_gb * MB) / no_of_thread;
 
-    pthread_write_listener::data = (byte_t *) malloc(KB);
-    for (int i = 0; i < KB; ++i) {
-        pthread_write_listener::data[i] = 255;
-    }
-
-    cout << "Directory: " + file + '\n' +
-          "Num of GB to write_c_standard: " + to_string(no_of_gb) + '\n' +
-          "Num of threads: " + to_string(no_of_thread) + '\n';
-
-    pthread_write_listener *pthread_listener_head = create_threads(no_of_thread);
-    wait_for_thread_launched(pthread_listener_head);
-
-    pthread_write_listener::is_started = true;
-    time(start_time);
-
-    speed_sample_head = show_speed(pthread_listener_head);
-
-    cout << endl << "====================" << endl;
-
-    int max = get_max_speed(speed_sample_head);
-    int min = get_min_speed(speed_sample_head);
-
-     cout << "Max speed: " << cal_size_miB(max) << endl
-          << "Min speed: " << cal_size_miB(min) << endl;
-
-    speed_sample_head = remove_samples(speed_sample_head);
-    free(pthread_write_listener::data);
 
     cout << "====================" << endl << endl;
 
     return 0;
 }
 
-int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_thread) {
+int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_thread, bool &is_cpp) {
     SYSTEM_INFO info;
     GetSystemInfo(&info);
     auto i = 1;
@@ -228,11 +192,11 @@ int get_config(int argc, char **argv, string &file, int &no_of_gb, int &no_of_th
                 case 'c': {
                     auto str = string(argv[i]);
                     if (str == "-cpp") {
-                        pthread_write_listener::is_cpp = true;
+                        is_cpp = true;
                         break;
                     }
                     if (str == "-c") {
-                        pthread_write_listener::is_cpp = false;
+                        is_cpp = false;
                         break;
                     }
                     break;
@@ -261,48 +225,4 @@ int get_argv_int(char **argv, int i) {
         j++;
     }
     return k;
-}
-
-pthread_write_listener *create_threads(const int &no_of_thread) {
-    pthread_write_listener *listener = nullptr;
-    // Using concept of linked list
-    for (auto i = 0; i < no_of_thread; ++i) {
-        listener = new pthread_write_listener(listener);
-        pthread_create(listener->getPThreadID(), nullptr, fun_write, listener);
-    }
-    while (listener->get_prev()) {
-        listener = listener->get_prev();
-    }
-    return listener;
-}
-
-void wait_for_thread_launched(pthread_write_listener *head) {
-    while (!check_is_launched(head));
-}
-
-speed_sample *show_speed(pthread_write_listener *head) {
-    double last_sum = 0;
-    double current_sum;
-    double diff;
-    speed_sample *current_sample = nullptr;
-
-    // Wait for 1s before sampling data
-    // Prevent incorrect MIN speed
-    Sleep(1000);
-
-    cout << "====================" << endl;
-    while (!are_all_completed(head)) {
-        current_sum = get_sum(head);
-
-        current_sample = new speed_sample(diff = current_sum - last_sum, current_sample);
-
-        cout << cal_size(current_sum) + " wrote, " + cal_size_miB(diff) + "/s\n";
-        last_sum = current_sum;
-        Sleep(1000);
-    }
-
-    while (current_sample->get_last()) {
-        current_sample = current_sample->get_last();
-    }
-    return current_sample;
 }
