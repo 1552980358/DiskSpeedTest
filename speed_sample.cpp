@@ -1,7 +1,3 @@
-//
-// Created by Huli on 2/2/2021.
-//
-
 #include "speed_sample.h"
 
 speed_sample::speed_sample(double data, speed_sample *last) {

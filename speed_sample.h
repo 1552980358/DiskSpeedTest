@@ -1,7 +1,3 @@
-//
-// Created by Huli on 2/2/2021.
-//
-
 #ifndef DISKSPEEDTEST_SPEED_SAMPLE_H
 #define DISKSPEEDTEST_SPEED_SAMPLE_H
 
