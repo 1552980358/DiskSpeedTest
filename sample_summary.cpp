@@ -5,9 +5,7 @@ void sample_summary::cal_avg(speed_sample *head) {
     _avg = 0;
     int i = 0;
     while (ptr) {
-        if (_max > head->get_data()) {
-            _max = head->get_data();
-        }
+        _avg += ptr->get_data();
         i++;
         ptr = ptr->get_next();
     }
