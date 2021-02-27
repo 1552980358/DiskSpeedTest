@@ -23,7 +23,7 @@ void *pthread_run(void *args) {
 
     auto data = (char *) malloc(NUM_512 * sizeof(byte_t));
     default_random_engine e(time(nullptr));
-    uniform_int_distribution<> u(0, NUM_255);
+    uniform_int_distribution<int> u(0, NUM_255);
     for (auto i = 0; i < NUM_512; ++i) {
         data[i] = u(e);
     }
@@ -32,22 +32,37 @@ void *pthread_run(void *args) {
 
     fstream stream(path, ios_bin | ios_out);
 
+    // 0
     receiver->update_proc();
 
     receiver->wait_for();
     seq_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t));
 
+    // 1
+    receiver->update_proc();
     stream.open(path, ios_in | ios_bin);
     cycle /= 2;
+
+    // 2
     receiver->update_proc();
     receiver->wait_for();
     seq_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t));
 
+    // 3
+    receiver->update_proc();
+    stream.open(path, ios_out | ios_in | ios_bin);
+    cycle *= 2;
+    e = default_random_engine(time(nullptr));
+    u = uniform_int_distribution(0, NUM_255);
+    for (int i = 0; i < NUM_512; ++i) {
+        data[i] = u(e);
+    }
+    u = uniform_int_distribution(0, (int) (*no_of_byte - sizeof(byte_t)));
 
+    // 4
     receiver->update_proc();
     receiver->wait_for();
-
-    //
+    ra_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
     receiver->update_proc();
     receiver->wait_for();
