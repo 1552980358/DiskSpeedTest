@@ -12,14 +12,12 @@ void seq_write_1_byte(pthread_receiver* receiver, fstream &stream, const int &cy
             stream.flush();
             receiver->write(data_size);
         }
-        for (int j = data_size; j > -1; ++j) {
+        for (int j = cycle; j > -1; ++j) {
             stream << data[j];
             stream.flush();
             receiver->write(data_size);
         }
     }
-    stream << data[data_size];
-    stream.flush();
     stream.close();
 }
 
