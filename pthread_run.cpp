@@ -65,10 +65,11 @@ void *pthread_run(void *args) {
     ra_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
     receiver->update_proc();
+    cycle /= 2;
+
+    receiver->update_proc();
     receiver->wait_for();
-
-    //
-
+    ra_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
     receiver->update_proc();
     receiver->wait_for();
