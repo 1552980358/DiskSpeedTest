@@ -32,9 +32,11 @@ void *pthread_run(void *args) {
 
     fstream stream(path, ios_bin | ios_out);
 
+    e = default_random_engine(time(nullptr));
+    u = uniform_int_distribution(0, NUM_255);
+
     // 0
     receiver->update_proc();
-
     receiver->wait_for();
     seq_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t));
 
@@ -42,6 +44,8 @@ void *pthread_run(void *args) {
     receiver->update_proc();
     stream.open(path, ios_in | ios_bin);
     cycle /= 2;
+    e = default_random_engine(time(nullptr));
+    u = uniform_int_distribution(0, NUM_255);
 
     // 2
     receiver->update_proc();
@@ -57,6 +61,7 @@ void *pthread_run(void *args) {
     for (int i = 0; i < NUM_512; ++i) {
         data[i] = u(e);
     }
+    e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, (int) (*no_of_byte - sizeof(byte_t)));
 
     // 4
@@ -72,6 +77,13 @@ void *pthread_run(void *args) {
     ra_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
     receiver->update_proc();
+    e = default_random_engine(time(nullptr));
+    u = uniform_int_distribution(0, NUM_255);
+    data = (char *) realloc(data, NUM_2048);
+    for (int i = 0; i < NUM_2048; ++i) {
+        data[i] = u(e);
+    }
+    e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, (int) (*no_of_byte - sizeof(byte_t) * NUM_4096));
 
     receiver->update_proc();
@@ -79,8 +91,8 @@ void *pthread_run(void *args) {
     ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
 
     receiver->update_proc();
-
-    //
+    receiver->wait_for();
+    ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
 
     receiver->update_proc();
     receiver->wait_for();
