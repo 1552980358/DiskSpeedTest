@@ -2,7 +2,7 @@
 
 main_sender::main_sender() = default;
 
-void main_sender::start() {
+void main_sender::update_proc() {
     _current_proc++;
 }
 
@@ -30,5 +30,5 @@ bool is_not_online(pthread_receiver *head, const int &proc) {
 }
 
 void main_sender::wait_for_online() {
-    while (is_not_online(_pthread_receiver_head, _current_proc));
+    while (is_not_online(_pthread_receiver_head, _current_proc + 1));
 }

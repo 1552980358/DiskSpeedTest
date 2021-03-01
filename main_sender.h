@@ -18,7 +18,7 @@ public:
 
     [[nodiscard]] int get_current_proc() const;
 
-    void start();
+    void update_proc();
 
     void set_pthread_receiver(pthread_receiver *);
 

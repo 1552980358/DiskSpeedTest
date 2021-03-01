@@ -39,10 +39,46 @@ int main(int argc, char **argv) {
     sender->set_pthread_receiver(create_thread(sender, file, no_of_byte, no_of_thread, is_cpp));
     pthread_receiver *receiver = sender->get_pthread_receiver_head();
 
+    // -1
     sender->wait_for_online();
-    sender->start();
-
+    // 0
+    sender->update_proc();
     auto *seq_write_byte_summary = get_sample_summary(sender, receiver);
+
+    // 1
+    sender->update_proc();
+    sender->wait_for_online();
+    // 2
+    sender->update_proc();
+    auto *seq_read_byte_summary = get_sample_summary(sender, receiver);
+
+    // 3
+    sender->update_proc();
+    sender->wait_for_online();
+    // 4
+    sender->update_proc();
+    auto *ra_write_byte_summary = get_sample_summary(sender, receiver);
+
+    // 5
+    sender->update_proc();
+    sender->wait_for_online();
+    // 6
+    sender->update_proc();
+    auto *ra_read_byte_summary = get_sample_summary(sender, receiver);
+
+    // 7
+    sender->update_proc();
+    sender->wait_for_online();
+    // 8
+    sender->update_proc();
+    auto *ra_write_4_k_byte_summary = get_sample_summary(sender, receiver);
+
+    // 9
+    sender->update_proc();
+    sender->wait_for_online();
+    // 10
+    sender->update_proc();
+    auto *ra_read_4_k_byte_summary = get_sample_summary(sender, receiver);
 
     cout << "====================" << endl << endl;
     getchar();

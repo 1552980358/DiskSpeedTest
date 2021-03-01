@@ -69,13 +69,16 @@ void *pthread_run(void *args) {
     receiver->wait_for();
     ra_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
+    // 5
     receiver->update_proc();
     cycle /= 2;
 
+    // 6
     receiver->update_proc();
     receiver->wait_for();
     ra_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
+    // 7
     receiver->update_proc();
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, NUM_255);
@@ -86,14 +89,15 @@ void *pthread_run(void *args) {
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, (int) (*no_of_byte - sizeof(byte_t) * NUM_4096));
 
+    // 8
     receiver->update_proc();
     receiver->wait_for();
     ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
 
+    //9
     receiver->update_proc();
-    receiver->wait_for();
-    ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
 
+    // 10
     receiver->update_proc();
     receiver->wait_for();
 
