@@ -2,6 +2,7 @@
 #define DISKSPEEDTEST_BYTE_SIZE_H
 
 #define NUM_1024 1024
+#define NUM_4096 4096
 #define NUM_512 512
 #define NUM_255 255
 

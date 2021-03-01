@@ -72,25 +72,18 @@ void *pthread_run(void *args) {
     ra_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
 
     receiver->update_proc();
+    u = uniform_int_distribution(0, (int) (*no_of_byte - sizeof(byte_t) * NUM_4096));
+
+    receiver->update_proc();
     receiver->wait_for();
+    ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
+
+    receiver->update_proc();
 
     //
 
     receiver->update_proc();
     receiver->wait_for();
-
-    //
-
-    receiver->update_proc();
-    receiver->wait_for();
-
-    //
-
-    receiver->update_proc();
-    receiver->wait_for();
-
-    //
-
 
 
     return nullptr;
