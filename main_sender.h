@@ -16,7 +16,7 @@ private:
 public:
     main_sender();
 
-    [[nodiscard]] int get_current_proc() const;
+    int get_current_proc();
 
     void update_proc();
 

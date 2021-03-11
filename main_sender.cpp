@@ -6,7 +6,7 @@ void main_sender::update_proc() {
     _current_proc++;
 }
 
-int main_sender::get_current_proc() const {
+int main_sender::get_current_proc() {
     return _current_proc;
 }
 
@@ -20,7 +20,7 @@ pthread_receiver *main_sender::get_pthread_receiver_head() {
 
 bool is_not_online(pthread_receiver *head, const int &proc) {
     auto *ptr = head;
-    while (head) {
+    while (ptr) {
         if (head->get_proc() != proc) {
             return true;
         }

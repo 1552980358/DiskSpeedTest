@@ -3,13 +3,71 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::cin;
 #include <string>
 using std::string;
+using std::getline;
 #include <windows.h>
 #include <ctime>
 #include "cal_size.h"
 
-int get_config(int argc, char **argv, string &file, double &no_of_byte, int &no_of_thread, bool &is_cpp) {
+int get_argv_int(char **argv, int i) {
+    auto j = 0;
+    auto k = 0;
+    while (true) {
+        try {
+            if (!argv[i][j] || argv[i][j] == '\0' || argv[i][j] < '0' || argv[i][j] > '9') {
+                break;
+            }
+            k = k * 10 + argv[i][j] - 48;
+        } catch (errno_t) { return 0; }
+        j++;
+    }
+    return k;
+}
+
+bool is_numbers(const string& str) {
+    for (char i : str) {
+        if (i > '9' || i < '0') {
+            return false;
+        }
+    }
+    return true;
+}
+
+int configuration(string &file, double &no_of_byte, int &no_of_thread, bool *is_cpp) {
+    SYSTEM_INFO info;
+    GetSystemInfo(&info);
+
+    string input;
+    cout << "Dir path to place test file: ";
+    getline(cin, input);
+    file = string(input);
+
+    cout << "Num of GiB data to be writ[100]: ";
+    getline(cin, input);
+    if (!input.empty()) {
+        if (!is_numbers(input)) {
+            return false;
+        }
+        no_of_byte = (double) atoi(input.c_str()) * GB;
+    }
+
+    cout << "No of thread(s) use[" << info.dwNumberOfProcessors / 2 << "]: ";
+    getline(cin, input);
+    if (input.empty()) {
+        no_of_thread = info.dwNumberOfProcessors / 2;
+    } else {
+        if (!is_numbers(input)) {
+            return false;
+        }
+        no_of_thread = (int) atoi(input.c_str());
+    }
+
+    return true;
+}
+
+int argv_config(int argc, char **argv, string &file, double &no_of_byte, int &no_of_thread, bool *is_cpp) {
     SYSTEM_INFO info;
     GetSystemInfo(&info);
     auto i = 1;
@@ -23,9 +81,7 @@ int get_config(int argc, char **argv, string &file, double &no_of_byte, int &no_
                         cout << "Parameter usage: -d <PATH>." << endl;
                         return 0;
                     }
-                    for (char c_str: string(argv[i])) {
-                        file += c_str;
-                    }
+                    file = string(argv[i]);
                     break;
                 }
                 case 's': {
@@ -161,11 +217,11 @@ int get_config(int argc, char **argv, string &file, double &no_of_byte, int &no_
                 case 'c': {
                     auto str = string(argv[i]);
                     if (str == "-cpp") {
-                        is_cpp = true;
+                        *is_cpp = true;
                         break;
                     }
                     if (str == "-c") {
-                        is_cpp = false;
+                        *is_cpp = false;
                         break;
                     }
                     break;
@@ -181,17 +237,3 @@ int get_config(int argc, char **argv, string &file, double &no_of_byte, int &no_
     return 1;
 }
 
-int get_argv_int(char **argv, int i) {
-    auto j = 0;
-    auto k = 0;
-    while (true) {
-        try {
-            if (!argv[i][j] || argv[i][j] == '\0' || argv[i][j] < '0' || argv[i][j] > '9') {
-                break;
-            }
-            k = k * 10 + argv[i][j] - 48;
-        } catch (errno_t) { return 0; }
-        j++;
-    }
-    return k;
-}

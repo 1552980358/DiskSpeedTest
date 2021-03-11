@@ -4,7 +4,8 @@
 #define DISKSPEEDTEST_PTHREAD_RECEIVER_H
 
 #include <pthread.h>
-
+#include <string>
+using std::string;
 #include "main_sender.h"
 class main_sender;
 
@@ -14,7 +15,7 @@ private:
 
     int _current_proc = -1;
 
-    pthread_t _pthread_id{};
+    pthread_t _pthread_id;
 
     main_sender *_sender = nullptr;
 
@@ -24,15 +25,19 @@ private:
 
     double _wrote = 0;
 
+    string _path;
+
+    double _byte_write;
+
 public:
 
-    pthread_receiver(main_sender *, pthread_receiver *);
+    pthread_receiver(main_sender *, pthread_receiver *, const string &, const double &);
 
     void wait_for();
 
     void write(double size);
 
-    double get_wrote() const;
+    [[nodiscard]] double get_wrote() const;
 
     void set_next(pthread_receiver *);
 
@@ -45,6 +50,14 @@ public:
     void update_proc();
 
     [[nodiscard]] int get_proc() const;
+
+    void set_path(const string &);
+
+    string get_path();
+
+    void set_byte_write(const double &);
+
+    [[nodiscard]] double get_byte_write() const;
 
 };
 

@@ -1,11 +1,13 @@
 #include "pthread_receiver.h"
 
-pthread_receiver::pthread_receiver(main_sender *sender, pthread_receiver *prev) {
+pthread_receiver::pthread_receiver(main_sender *sender, pthread_receiver *prev, const string &path, const double &byte_write) {
     _sender = sender;
     if (prev) {
         _prev = prev;
         _prev->set_next(this);
     }
+    set_path(path);
+    set_byte_write(byte_write);
 }
 
 void pthread_receiver::wait_for() {
@@ -42,4 +44,20 @@ void pthread_receiver::update_proc() {
 
 int pthread_receiver::get_proc() const {
     return _current_proc;
+}
+
+void pthread_receiver::set_path(const string &path) {
+    _path = path;
+}
+
+string pthread_receiver::get_path() {
+    return _path;
+}
+
+void pthread_receiver::set_byte_write(const double &byte_write) {
+    _byte_write = byte_write;
+}
+
+double pthread_receiver::get_byte_write() const {
+    return _byte_write;
 }

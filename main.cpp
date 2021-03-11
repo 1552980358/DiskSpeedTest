@@ -1,14 +1,19 @@
 #include <iostream>
+
 using std::cout;
 using std::endl;
 using std::ios;
 using std::ofstream;
+
 #include <string>
+
 using std::string;
 using std::to_string;
+
 #include <pthread.h>
 #include <malloc.h>
 #include <windows.h>
+#include <cstdio>
 
 #include "cal_size.h"
 #include "speed_sample.h"
@@ -18,20 +23,32 @@ using std::to_string;
 #include "args_util.h"
 #include "sample_summary.h"
 
-pthread_receiver *create_thread(main_sender *, const string &, const double &, const int &, const bool &);
-sample_summary *get_sample_summary(main_sender *,pthread_receiver *);
+pthread_receiver *create_thread(main_sender *, const string &, const double &, const int &, bool *);
+
+sample_summary *get_sample_summary(main_sender *, pthread_receiver *);
+
 void recycle_samples(speed_sample *);
 
 int main(int argc, char **argv) {
 
     string file;
-    double no_of_byte = 10.0 * GB;
+    auto no_of_byte = 100 * (double) GB;
     auto no_of_thread = 2;
-    bool is_cpp = true;
+    auto *is_cpp = new bool(true);
 
-    if (!get_config(argc, argv, file, no_of_byte, no_of_thread, is_cpp)) {
+    cout << 1;
+    if (argc == 1) {
+        if (!configuration(file, no_of_byte, no_of_thread, is_cpp)) {
+            return 1;
+        }
+    } else if (!argv_config(argc, argv, file, no_of_byte, no_of_thread, is_cpp)) {
         return 1;
     }
+
+    cout << "Dir: " << file << endl
+         << "Num of thread: " << no_of_thread << endl
+         << "Num of bytes: " << no_of_byte << endl
+         << "======================" << endl;
 
     auto *sender = new main_sender();
 
@@ -85,14 +102,13 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-pthread_receiver *create_thread(main_sender *sender, const string &file, const double &no_of_byte, const int &no_of_thread, const bool &is_cpp) {
+pthread_receiver *
+create_thread(main_sender *sender, const string &file, const double &no_of_byte, const int &no_of_thread,
+              bool *is_cpp) {
     pthread_receiver *receiver = nullptr;
-    string path;
     for (int i = 0; i < no_of_thread; ++i) {
-        receiver = new pthread_receiver(sender, receiver);
-        path = (file + "\\" + to_string(i));
-        void *args[] = {(void *) sender, (void *) path.c_str(), (void *) &no_of_byte};
-        pthread_create(receiver->get_pthread_id(), nullptr, pthread_run, args);
+        receiver = new pthread_receiver(sender, receiver, file + "/" + to_string(i), no_of_byte);
+        pthread_create(receiver->get_pthread_id(), nullptr, pthread_run, (void *) receiver);
     }
     while (receiver->get_prev()) {
         receiver = receiver->get_prev();
@@ -121,12 +137,14 @@ double get_wrote_sum(pthread_receiver *receiver) {
 }
 
 speed_sample *get_samples(main_sender *sender, pthread_receiver *receiver) {
-    speed_sample *sample = nullptr;
+    speed_sample *sample = new speed_sample(0, nullptr);
     while (are_all_continue(sender, receiver)) {
         Sleep(1000);
         sample = new speed_sample(get_wrote_sum(receiver), sample);
-        cout << sample->get_data() - sample->get_last()->get_data() << " B/s" << endl;
-        cout.flush();
+        cout << "\r" << sample->get_data() - sample->get_last()->get_data() << " B/s";
+        for (int i = 0; i < 10; ++i) {
+            cout << ' ';
+        }
     }
     cout << "Handling with data..." << endl;
     while (sample->get_last()) {
