@@ -126,6 +126,7 @@ speed_sample *get_samples(main_sender *sender, pthread_receiver *receiver) {
         Sleep(1000);
         sample = new speed_sample(get_wrote_sum(receiver), sample);
         cout << sample->get_data() - sample->get_last()->get_data() << " B/s" << endl;
+        cout.flush();
     }
     cout << "Handling with data..." << endl;
     while (sample->get_last()) {

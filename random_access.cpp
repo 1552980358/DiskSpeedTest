@@ -38,6 +38,12 @@ void ra_write_4_k_byte(pthread_receiver *receiver, fstream &stream, const int &c
     stream.close();
 }
 
-void ra_read_4_k_byte() {
-
+void ra_read_4_k_byte(pthread_receiver *receiver, fstream &stream, const int &cycle, char *data, const int &data_size, default_random_engine &e, uniform_int_distribution<int> &u) {
+    for (int i = 0; i < cycle; ++i) {
+        stream.seekp(u(e));
+        stream.read(data, data_size);
+        stream.flush();
+        receiver->write(data_size);
+    }
+    stream.close();
 }

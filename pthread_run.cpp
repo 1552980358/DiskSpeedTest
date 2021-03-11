@@ -97,10 +97,14 @@ void *pthread_run(void *args) {
     //9
     receiver->update_proc();
 
+    data = (char *) realloc(data, NUM_4096);
+    e = default_random_engine(time(nullptr));
+    u = uniform_int_distribution(0, NUM_255);
+
     // 10
     receiver->update_proc();
     receiver->wait_for();
-
+    ra_read_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
 
     return nullptr;
 }

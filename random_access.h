@@ -13,6 +13,6 @@ void ra_read_1_byte(pthread_receiver *, fstream &, const int &, char *, const in
 
 void ra_write_4_k_byte(pthread_receiver *, fstream &, const int &, char *, const int &, default_random_engine &, uniform_int_distribution<int> &);
 
-void ra_read_4_k_byte();
+void ra_read_4_k_byte(pthread_receiver *, fstream &, const int &, char *, const int &, default_random_engine &, uniform_int_distribution<int> &);
 
 #endif //DISKSPEEDTEST_RANDOM_ACCESS_H
