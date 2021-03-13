@@ -108,6 +108,43 @@ int main(int argc, char **argv) {
     auto *ra_read_4_k_byte_summary = get_sample_summary(sender, receiver);
 
     cout << "====================" << endl << endl;
+
+    cout << "General Sequential Write" << endl
+         << "Max: " << cal_size_miB(seq_write_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(seq_write_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(seq_write_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
+    cout << "General Sequential Read" << endl
+         << "Max: " << cal_size_miB(seq_read_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(seq_read_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(seq_read_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
+    cout << "General Random Access Write" << endl
+         << "Max: " << cal_size_miB(ra_write_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(ra_write_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(ra_write_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
+    cout << "General Random Access Read" << endl
+         << "Max: " << cal_size_miB(ra_read_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(ra_read_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(ra_read_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
+    cout << "Random Access 4K Write" << endl
+         << "Max: " << cal_size_miB(ra_write_4_k_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(ra_write_4_k_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(ra_write_4_k_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
+    cout << "Random Access 4K Read" << endl
+         << "Max: " << cal_size_miB(ra_read_4_k_byte_summary->get_max()) << "/s" << endl
+         << "Min: " << cal_size_miB(ra_read_4_k_byte_summary->get_min()) << "/s" << endl
+         << "Avg: " << cal_size_miB(ra_read_4_k_byte_summary->get_avg()) << "/s" << endl
+         << endl;
+
     getchar();
     return 0;
 }
@@ -152,7 +189,7 @@ speed_sample *get_samples(main_sender *sender, pthread_receiver *receiver) {
     while (are_all_continue(sender, receiver)) {
         Sleep(1000);
         sample = new speed_sample(get_wrote_sum(receiver), sample);
-        cout << "\r" + to_string(sample->get_data() - (sample->get_last() ? sample->get_last()->get_data() : 0)) + " B/s     ";
+        cout << "\r" + cal_size_miB(sample->get_data() - (sample->get_last() ? sample->get_last()->get_data() : 0)) + "/s     ";
         cout.flush();
     }
     cout << "Handling with data..." << endl;
