@@ -100,6 +100,7 @@ int main(int argc, char **argv) {
 
     // 10
     sender->update_proc();
+    cout << "Waiting for threads..." << endl;
     sender->wait_for_online();
     cout << "Random Access 4K Read" << endl;
     // 11
