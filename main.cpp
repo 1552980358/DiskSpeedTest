@@ -1,12 +1,11 @@
 #include <iostream>
-
 using std::cout;
 using std::endl;
 using std::ios;
 using std::ofstream;
+using std::flush;
 
 #include <string>
-
 using std::string;
 using std::to_string;
 
@@ -36,7 +35,6 @@ int main(int argc, char **argv) {
     auto no_of_thread = 2;
     auto *is_cpp = new bool(true);
 
-    cout << 1;
     if (argc == 1) {
         if (!configuration(file, no_of_byte, no_of_thread, is_cpp)) {
             return 1;
@@ -56,44 +54,55 @@ int main(int argc, char **argv) {
     sender->set_pthread_receiver(create_thread(sender, file, no_of_byte, no_of_thread, is_cpp));
     pthread_receiver *receiver = sender->get_pthread_receiver_head();
 
-    // -1
-    sender->wait_for_online();
+    cout << "Waiting for threads..." << endl;
     // 0
+    sender->wait_for_online();
+    cout << "General Sequential Write" << endl;
+    // 1
     sender->update_proc();
     auto *seq_write_byte_summary = get_sample_summary(sender, receiver);
 
-    // 1
-    sender->update_proc();
-    sender->wait_for_online();
     // 2
+    sender->update_proc();
+    cout << "Waiting for threads..." << endl;
+    sender->wait_for_online();
+    cout << "General Sequential Read" << endl;
+    // 3
     sender->update_proc();
     auto *seq_read_byte_summary = get_sample_summary(sender, receiver);
 
-    // 3
-    sender->update_proc();
-    sender->wait_for_online();
     // 4
+    sender->update_proc();
+    cout << "Waiting for threads..." << endl;
+    sender->wait_for_online();
+    cout << "General Random Access Write" << endl;
+    // 5
     sender->update_proc();
     auto *ra_write_byte_summary = get_sample_summary(sender, receiver);
 
-    // 5
-    sender->update_proc();
-    sender->wait_for_online();
     // 6
+    sender->update_proc();
+    cout << "Waiting for threads..." << endl;
+    sender->wait_for_online();
+    cout << "General Random Access Read" << endl;
+    // 7
     sender->update_proc();
     auto *ra_read_byte_summary = get_sample_summary(sender, receiver);
 
-    // 7
-    sender->update_proc();
-    sender->wait_for_online();
     // 8
+    sender->update_proc();
+    cout << "Waiting for threads..." << endl;
+    sender->wait_for_online();
+    cout << "Random Access 4K Write" << endl;
+    // 9
     sender->update_proc();
     auto *ra_write_4_k_byte_summary = get_sample_summary(sender, receiver);
 
-    // 9
+    // 10
     sender->update_proc();
     sender->wait_for_online();
-    // 10
+    cout << "Random Access 4K Read" << endl;
+    // 11
     sender->update_proc();
     auto *ra_read_4_k_byte_summary = get_sample_summary(sender, receiver);
 
@@ -107,7 +116,7 @@ create_thread(main_sender *sender, const string &file, const double &no_of_byte,
               bool *is_cpp) {
     pthread_receiver *receiver = nullptr;
     for (int i = 0; i < no_of_thread; ++i) {
-        receiver = new pthread_receiver(sender, receiver, file + "/" + to_string(i), no_of_byte);
+        receiver = new pthread_receiver(sender, receiver, file + "/" + to_string(i), no_of_byte / no_of_thread);
         pthread_create(receiver->get_pthread_id(), nullptr, pthread_run, (void *) receiver);
     }
     while (receiver->get_prev()) {
@@ -122,6 +131,7 @@ bool are_all_continue(main_sender *sender, pthread_receiver *receiver) {
         if (ptr->get_proc() == sender->get_current_proc()) {
             return true;
         }
+        ptr = ptr->get_next();
     }
     return false;
 }

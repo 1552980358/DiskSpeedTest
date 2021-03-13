@@ -9,14 +9,14 @@ class pthread_receiver;
 class main_sender {
 
 private:
-    int _current_proc = -1;
+    int _current_proc = 0;
 
     pthread_receiver *_pthread_receiver_head = nullptr;
 
 public:
     main_sender();
 
-    int get_current_proc();
+    int get_current_proc() const;
 
     void update_proc();
 

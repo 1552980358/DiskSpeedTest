@@ -4,7 +4,7 @@ speed_sample::speed_sample(double data, speed_sample *last) {
     _data = data;
     if (last) {
         _last = last;
-        last->set_next(this);
+        _last->set_next(this);
     }
 }
 

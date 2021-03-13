@@ -13,10 +13,10 @@ void sample_summary::cal_avg(speed_sample *head) {
 }
 
 void sample_summary::find_max(speed_sample *head) {
-    speed_sample *ptr = head->get_next();
-    _max = head->get_next()->get_data();
+    speed_sample *ptr = head;
+    _max = head->get_data();
     while (ptr) {
-        if (_max > head->get_data()) {
+        if (_max > (head->get_data() - (head->get_last() ? head->get_last()->get_data() : 0))) {
             _max = head->get_data();
         }
         ptr = ptr->get_next();
@@ -24,10 +24,10 @@ void sample_summary::find_max(speed_sample *head) {
 }
 
 void sample_summary::find_min(speed_sample *head) {
-    speed_sample *ptr = head->get_next();
-    _min = head->get_next()->get_data();
+    speed_sample *ptr = head;
+    _min = head->get_data();
     while (ptr) {
-        if (_min < head->get_data()) {
+        if (_min < (head->get_data() - (head->get_last() ? head->get_last()->get_data() : 0))) {
             _min = head->get_data();
         }
         ptr = ptr->get_next();
@@ -35,8 +35,8 @@ void sample_summary::find_min(speed_sample *head) {
 }
 
 void sample_summary::find_cache(speed_sample *head) {
-    speed_sample *ptr = head->get_next();
-    auto last_speed = head->get_next()->get_data();
+    speed_sample *ptr = head;
+    auto last_speed = ptr->get_data();
     double current_speed;
     while (ptr) {
         if (ptr->get_next()) {

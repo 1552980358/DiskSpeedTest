@@ -13,7 +13,7 @@ class pthread_receiver {
 
 private:
 
-    int _current_proc = -1;
+    int _current_proc = 0;
 
     pthread_t _pthread_id;
 
