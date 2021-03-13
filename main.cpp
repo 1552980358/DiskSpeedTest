@@ -147,14 +147,12 @@ double get_wrote_sum(pthread_receiver *receiver) {
 }
 
 speed_sample *get_samples(main_sender *sender, pthread_receiver *receiver) {
-    speed_sample *sample = new speed_sample(0, nullptr);
+    speed_sample *sample = nullptr;
     while (are_all_continue(sender, receiver)) {
         Sleep(1000);
         sample = new speed_sample(get_wrote_sum(receiver), sample);
-        cout << "\r" << sample->get_data() - sample->get_last()->get_data() << " B/s";
-        for (int i = 0; i < 10; ++i) {
-            cout << ' ';
-        }
+        cout << "\r" + to_string(sample->get_data() - (sample->get_last() ? sample->get_last()->get_data() : 0)) + " B/s     ";
+        cout.flush();
     }
     cout << "Handling with data..." << endl;
     while (sample->get_last()) {
