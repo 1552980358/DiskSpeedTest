@@ -59,7 +59,6 @@ void *pthread_run(void *args) {
 
     // 3
     receiver->update_proc();
-    stream.open(path, ios_out | ios_in | ios_bin);
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, NUM_255);
     for (int i = 0; i < NUM_512; ++i) {
@@ -67,6 +66,7 @@ void *pthread_run(void *args) {
     }
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, (int) (no_of_byte - sizeof(byte_t)));
+    stream.open(path, ios_out | ios_bin);
 
     // 4
     receiver->update_proc();
@@ -76,6 +76,7 @@ void *pthread_run(void *args) {
     // 5
     receiver->update_proc();
     e = default_random_engine(time(nullptr));
+    stream.open(path, ios_in | ios_bin);
 
     // 6
     receiver->update_proc();
@@ -92,6 +93,7 @@ void *pthread_run(void *args) {
     }
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, (int) (no_of_byte - NUM_4096));
+    stream.open(path, ios_out | ios_bin);
 
     // 8
     receiver->update_proc();
@@ -101,6 +103,7 @@ void *pthread_run(void *args) {
     //9
     receiver->update_proc();
     e = default_random_engine(time(nullptr));
+    stream.open(path, ios_in | ios_bin);
 
     // 10
     receiver->update_proc();
