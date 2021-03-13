@@ -44,24 +44,22 @@ void *pthread_run(void *args) {
     // 0
     receiver->update_proc();
     receiver->wait_for();
-    seq_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t));
+    seq_write_1_byte(receiver, stream, cycle, data, NUM_512);
 
     // 1
     receiver->update_proc();
     stream.open(path, ios_in | ios_bin);
-    cycle /= 2;
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, NUM_255);
 
     // 2
     receiver->update_proc();
     receiver->wait_for();
-    seq_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t));
+    seq_read_1_byte(receiver, stream, cycle, data, NUM_512);
 
     // 3
     receiver->update_proc();
     stream.open(path, ios_out | ios_in | ios_bin);
-    cycle *= 2;
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, NUM_255);
     for (int i = 0; i < NUM_512; ++i) {
@@ -73,44 +71,41 @@ void *pthread_run(void *args) {
     // 4
     receiver->update_proc();
     receiver->wait_for();
-    ra_write_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
+    ra_write_1_byte(receiver, stream, cycle, data, NUM_512, e, u);
 
     // 5
     receiver->update_proc();
-    cycle /= 2;
+    e = default_random_engine(time(nullptr));
 
     // 6
     receiver->update_proc();
     receiver->wait_for();
-    ra_read_1_byte(receiver, stream, cycle, data, sizeof(byte_t), e, u);
+    ra_read_1_byte(receiver, stream, cycle, data, NUM_512, e, u);
 
     // 7
     receiver->update_proc();
     e = default_random_engine(time(nullptr));
     u = uniform_int_distribution(0, NUM_255);
-    data = (char *) realloc(data, NUM_2048);
-    for (int i = 0; i < NUM_2048; ++i) {
+    data = (char *) realloc(data, NUM_4096);
+    for (int i = 0; i < NUM_4096; ++i) {
         data[i] = u(e);
     }
     e = default_random_engine(time(nullptr));
-    u = uniform_int_distribution(0, (int) (no_of_byte - sizeof(byte_t) * NUM_4096));
+    u = uniform_int_distribution(0, (int) (no_of_byte - NUM_4096));
 
     // 8
     receiver->update_proc();
     receiver->wait_for();
-    ra_write_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
+    ra_write_4_k_byte(receiver, stream, cycle, data, NUM_4096, e, u);
 
     //9
     receiver->update_proc();
-
-    data = (char *) realloc(data, NUM_4096);
     e = default_random_engine(time(nullptr));
-    u = uniform_int_distribution(0, NUM_255);
 
     // 10
     receiver->update_proc();
     receiver->wait_for();
-    ra_read_4_k_byte(receiver, stream, cycle, data, sizeof(byte_t) * NUM_4096, e, u);
+    ra_read_4_k_byte(receiver, stream, cycle, data, NUM_4096, e, u);
 
     receiver->update_proc();
     free(data);
