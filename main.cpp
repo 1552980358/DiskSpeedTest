@@ -43,10 +43,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    cout << "Dir: " << file << endl
+    cout << "======================" << endl
+         << "Dir: " << file << endl
          << "Num of thread: " << no_of_thread << endl
-         << "Num of bytes: " << no_of_byte << endl
-         << "======================" << endl;
+         << "Num of bytes: " << cal_size(no_of_byte) << endl
+         << "======================" << endl
+         << "Press any key to start...";
+    getchar();
 
     auto *sender = new main_sender();
 
