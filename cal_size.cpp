@@ -13,15 +13,15 @@ string cal_size(double current_size) {
         tmp = tmp.substr(0, tmp.find('.'));
         return tmp + " TiB";
     } else if (current_size >= GB) {
-        tmp = to_string(current_size / 1E+9);
+        tmp = to_string(current_size / GB);
         tmp = tmp.substr(0, tmp.find('.'));
         return tmp + " GiB";
     } else if (current_size >= MB) {
-        tmp = to_string(current_size / 1E+6);
+        tmp = to_string(current_size / MB);
         tmp = tmp.substr(0, tmp.find('.'));
         return tmp + " MiB";
     } else if (current_size >= KB) {
-        tmp = to_string(current_size / 1E+3);
+        tmp = to_string(current_size /KB);
         tmp = tmp.substr(0, tmp.find('.'));
         return tmp + " KiB";
     } else {
